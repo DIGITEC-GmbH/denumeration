@@ -143,7 +143,7 @@ abstract class Enumeration (initial: Int) extends Serializable { thisenum =>
       /** the id and bit location of this enumeration value */
       def id: Int
       /** a marker so we can tell whose values belong to whom come reflective-naming time */
-      private[DEnumeration] val outerEnum = thisenum
+      private[Enumeration] val outerEnum = thisenum
 
       override def compare(that: Value): Int =
          if (this.id < that.id) -1
