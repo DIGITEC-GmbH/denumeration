@@ -1,8 +1,8 @@
 organization := "de.digitec"
 
-name := "enum"
+name := "enumerator"
 
-version := "0.3"
+version := "0.1"
 
 scalaVersion := "2.12.10"
 // TODO CDO: Cross versions

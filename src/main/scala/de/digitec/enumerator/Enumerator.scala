@@ -1,4 +1,4 @@
-package de.digitec.`enum`
+package de.digitec.enumerator
 
 import java.lang.reflect.{Field => JField, Method => JMethod}
 
