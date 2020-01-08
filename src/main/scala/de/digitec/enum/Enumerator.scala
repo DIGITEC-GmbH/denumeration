@@ -1,16 +1,14 @@
 package de.digitec.`enum`
 
-import scala.collection.{AbstractSet, SortedSetLike, generic, immutable, mutable}
 import java.lang.reflect.{Field => JField, Method => JMethod}
 
-import scala.collection.generic.CanBuildFrom
-import scala.collection.immutable.SortedSet
+import scala.collection.{AbstractSet, SortedSetLike, generic, immutable, mutable}
 import scala.reflect.NameTransformer._
 import scala.util.matching.Regex
 
 // TODO CDO: Licence and Notice
 
-abstract class Enumeration (initial: Int) extends Serializable { thisenum =>
+abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
 
    def this() = this(0)
 
@@ -118,7 +116,7 @@ abstract class Enumeration (initial: Int) extends Serializable { thisenum =>
       // The list of possible Value methods: 0-args which return a conforming type
       val methods: Array[JMethod] = getClass.getMethods filter (m => m.getParameterTypes.isEmpty &&
          classOf[Value].isAssignableFrom(m.getReturnType) &&
-         m.getDeclaringClass != classOf[Enumeration] &&
+         m.getDeclaringClass != classOf[Enumerator] &&
          isValDef(m))
       methods foreach { m =>
          val name = m.getName
@@ -143,14 +141,14 @@ abstract class Enumeration (initial: Int) extends Serializable { thisenum =>
       /** the id and bit location of this enumeration value */
       def id: Int
       /** a marker so we can tell whose values belong to whom come reflective-naming time */
-      private[Enumeration] val outerEnum = thisenum
+      private[Enumerator] val outerEnum = thisenum
 
       override def compare(that: Value): Int =
          if (this.id < that.id) -1
          else if (this.id == that.id) 0
          else 1
       override def equals(other: Any): Boolean = other match {
-         case that: Enumeration#Value  => (outerEnum eq that.outerEnum) && (id == that.id)
+         case that: Enumerator#Value  => (outerEnum eq that.outerEnum) && (id == that.id)
          case _                        => false
       }
       override def hashCode: Int = id.##
@@ -185,7 +183,7 @@ abstract class Enumeration (initial: Int) extends Serializable { thisenum =>
       }
 
       protected def readResolve(): AnyRef = {
-         val enum = thisenum.readResolve().asInstanceOf[Enumeration]
+         val enum = thisenum.readResolve().asInstanceOf[Enumerator]
          if (enum.vmap == null) this
          else enum.vmap(i)
       }

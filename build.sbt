@@ -2,11 +2,11 @@ organization := "de.digitec"
 
 name := "enum"
 
-version := "0.1-SNAPSHOT"
+version := "0.3"
 
-scalaVersion := "2.12.3"
+scalaVersion := "2.12.10"
 // TODO CDO: Cross versions
-crossScalaVersions := Seq("2.12.3")
+crossScalaVersions := Seq("2.12", "2.13")
 
 
 /** Tests: */
