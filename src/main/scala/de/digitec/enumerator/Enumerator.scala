@@ -21,11 +21,8 @@ import scala.collection.{AbstractSet, SortedSetLike, generic, immutable, mutable
 import scala.reflect.NameTransformer._
 import scala.util.matching.Regex
 
-// TODO CDO: Licence and Notice
-
 @SerialVersionUID(8476000850333817230L)
-abstract class Enumerator(initial: Int) extends Serializable {
-   thisenum =>
+abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
 
    def this() = this(0)
 
@@ -51,6 +48,8 @@ abstract class Enumerator(initial: Int) extends Serializable {
    /** The mapping from the integer used to identify values to their
     * names. */
    private val nmap: mutable.Map[Int, String] = new mutable.HashMap
+
+   private val valuesByName: mutable.Map[String, Value] = new mutable.HashMap
 
    /** The values of this enumeration as a set.
     */
@@ -87,6 +86,9 @@ abstract class Enumerator(initial: Int) extends Serializable {
     */
    final def apply(x: Int): Value = vmap(x)
 
+   /** Optionally returns the [[Value]] associated with x */
+   final def get(x: Int): Option[Value] = vmap.get(x)
+
    /** Return a `Value` from this `Enumeration` whose name matches
     * the argument `s`.  The names are determined automatically via reflection.
     *
@@ -95,8 +97,20 @@ abstract class Enumerator(initial: Int) extends Serializable {
     * @throws   NoSuchElementException if no `Value` with a matching
     *                                  name is in this `Enumeration`
     */
-   final def withName(s: String): Value = values.find(_.toString == s).getOrElse(
-      throw new NoSuchElementException(s"No value found for '$s'"))
+   final def withName(s: String): Value = {
+      valuesByName.getOrElse(s, {
+         updateValuesByNameMap()
+         valuesByName(s)
+      })
+   }
+
+   /** Like [[withName()]] without throwing an Exception */
+   final def withNameOpt(s: String): Option[Value] = {
+      valuesByName.get(s) orElse {
+         updateValuesByNameMap()
+         valuesByName.get(s)
+      }
+   }
 
    /** Creates a fresh value, part of this enumeration. */
    protected final def Value: Value = Value(nextId)
@@ -157,12 +171,22 @@ abstract class Enumerator(initial: Int) extends Serializable {
       }
    }
 
+   private def updateValuesByNameMap(): Unit = {
+      if (nmap.isEmpty) {
+         populateNameMap()
+      }
+      nmap.foreach { idString =>
+         valuesByName += ((idString._2, vmap(idString._1)))
+      }
+   }
+
    /* Obtains the name for the value with id `i`. If no name is cached
     * in `nmap`, it populates `nmap` using reflection.
     */
    private def nameOf(i: Int): String = synchronized {
       nmap.getOrElse(i, {
-         populateNameMap(); nmap(i)
+         populateNameMap()
+         nmap(i)
       })
    }
 
@@ -258,7 +282,7 @@ abstract class Enumerator(initial: Int) extends Serializable {
       def intersect(that: ValueSet): ValueSet = new ValueSet(this.nnIds & that.nnIds)
       def intersects(that: ValueSet): Boolean = this.intersect(that).nonEmpty
 
-      def iterator: Iterator[Value] = nnIds.iterator map (id => thisenum.apply(bottomId + id))
+      def iterator: Iterator[Value] = nnIds.iterator.map(id => thisenum.apply(bottomId + id))
 
       override def keysIteratorFrom(start: Value): Iterator[Value] =
          nnIds keysIteratorFrom start.id map (id => thisenum.apply(bottomId + id))

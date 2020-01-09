@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module external.linked.project.id="enumerator-build" external.linked.project.path="$MODULE_DIR$/../../project" external.root.project.path="$MODULE_DIR$/../.." external.system.id="SBT" sbt.imports="_root_.sbt.Keys._, _root_.sbt.ScriptedPlugin.autoImport._, _root_.sbt._, _root_.sbt.nio.Keys._, _root_.sbt.plugins.IvyPlugin, _root_.sbt.plugins.JvmPlugin, _root_.sbt.plugins.CorePlugin, _root_.sbt.ScriptedPlugin, _root_.sbt.plugins.SbtPlugin, _root_.sbt.plugins.SemanticdbPlugin, _root_.sbt.plugins.JUnitXmlReportPlugin, _root_.sbt.plugins.Giter8TemplatePlugin, _root_.scala.xml.{TopScope=&amp;gt;SUB:DOLLARscope}" sbt.resolvers="file:/$USER_HOME$/.sbt/preloaded|maven|local-preloaded, https://repo1.maven.org/maven2/|maven|public, C:\Users\cdo\.ivy2\cache|ivy|Local cache" type="SBT_MODULE" version="4">
+<module external.linked.project.id="enumerator-build" external.linked.project.path="$MODULE_DIR$/../../project" external.root.project.path="$MODULE_DIR$/../.." external.system.id="SBT" sbt.imports="_root_.sbt.Keys._, _root_.sbt.ScriptedPlugin.autoImport._, _root_.pl.project13.scala.sbt.JmhPlugin.autoImport._, _root_.sbt._, _root_.sbt.nio.Keys._, _root_.sbt.plugins.IvyPlugin, _root_.sbt.plugins.JvmPlugin, _root_.sbt.plugins.CorePlugin, _root_.sbt.ScriptedPlugin, _root_.sbt.plugins.SbtPlugin, _root_.sbt.plugins.SemanticdbPlugin, _root_.sbt.plugins.JUnitXmlReportPlugin, _root_.sbt.plugins.Giter8TemplatePlugin, _root_.pl.project13.scala.sbt.JmhPlugin, _root_.scala.xml.{TopScope=&amp;gt;SUB:DOLLARscope}" sbt.resolvers="file:/$USER_HOME$/.sbt/preloaded|maven|local-preloaded, https://repo1.maven.org/maven2/|maven|public, C:\Users\cdo\.ivy2\cache|ivy|Local cache" type="SBT_MODULE" version="4">
   <component name="NewModuleRootManager">
     <output url="file://$MODULE_DIR$/../../project/target/idea-classes" />
     <output-test url="file://$MODULE_DIR$/../../project/target/idea-test-classes" />
@@ -101,6 +101,15 @@
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.12.10/org.scala-sbt/sbt/1.3.6/zinc-lm-integration_2.12-1.3.6.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.12.10/org.scala-sbt/sbt/1.3.6/zinc-persist_2.12-1.3.1.jar!/" />
           <root url="jar://$USER_HOME$/.sbt/boot/scala-2.12.10/org.scala-sbt/sbt/1.3.6/zinc_2.12-1.3.1.jar!/" />
+          <root url="jar://$USER_HOME$/AppData/Local/Coursier/cache/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/pl.project13.scala/sbt-jmh/scala_2.12/sbt_1.0/0.3.7/jars/sbt-jmh.jar!/" />
+          <root url="jar://$USER_HOME$/AppData/Local/Coursier/cache/v1/https/repo1.maven.org/maven2/net/sf/jopt-simple/jopt-simple/4.6/jopt-simple-4.6.jar!/" />
+          <root url="jar://$USER_HOME$/AppData/Local/Coursier/cache/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-math3/3.2/commons-math3-3.2.jar!/" />
+          <root url="jar://$USER_HOME$/AppData/Local/Coursier/cache/v1/https/repo1.maven.org/maven2/org/openjdk/jmh/jmh-core/1.21/jmh-core-1.21.jar!/" />
+          <root url="jar://$USER_HOME$/AppData/Local/Coursier/cache/v1/https/repo1.maven.org/maven2/org/openjdk/jmh/jmh-generator-asm/1.21/jmh-generator-asm-1.21.jar!/" />
+          <root url="jar://$USER_HOME$/AppData/Local/Coursier/cache/v1/https/repo1.maven.org/maven2/org/openjdk/jmh/jmh-generator-bytecode/1.21/jmh-generator-bytecode-1.21.jar!/" />
+          <root url="jar://$USER_HOME$/AppData/Local/Coursier/cache/v1/https/repo1.maven.org/maven2/org/openjdk/jmh/jmh-generator-reflection/1.21/jmh-generator-reflection-1.21.jar!/" />
+          <root url="jar://$USER_HOME$/AppData/Local/Coursier/cache/v1/https/repo1.maven.org/maven2/org/ow2/asm/asm/5.0.3/asm-5.0.3.jar!/" />
+          <root url="jar://$USER_HOME$/AppData/Local/Coursier/cache/v1/https/repo1.maven.org/maven2/pl/project13/scala/sbt-jmh-extras/0.3.7/sbt-jmh-extras-0.3.7.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -109,6 +118,6 @@
   </component>
   <component name="SbtModule">
     <option name="buildForURI" value="file:/$MODULE_DIR$/../../" />
-    <option name="imports" value="_root_.sbt.Keys._, _root_.sbt.ScriptedPlugin.autoImport._, _root_.sbt._, _root_.sbt.nio.Keys._, _root_.sbt.plugins.IvyPlugin, _root_.sbt.plugins.JvmPlugin, _root_.sbt.plugins.CorePlugin, _root_.sbt.ScriptedPlugin, _root_.sbt.plugins.SbtPlugin, _root_.sbt.plugins.SemanticdbPlugin, _root_.sbt.plugins.JUnitXmlReportPlugin, _root_.sbt.plugins.Giter8TemplatePlugin, _root_.scala.xml.{TopScope=&gt;SUB:DOLLARscope}" />
+    <option name="imports" value="_root_.sbt.Keys._, _root_.sbt.ScriptedPlugin.autoImport._, _root_.pl.project13.scala.sbt.JmhPlugin.autoImport._, _root_.sbt._, _root_.sbt.nio.Keys._, _root_.sbt.plugins.IvyPlugin, _root_.sbt.plugins.JvmPlugin, _root_.sbt.plugins.CorePlugin, _root_.sbt.ScriptedPlugin, _root_.sbt.plugins.SbtPlugin, _root_.sbt.plugins.SemanticdbPlugin, _root_.sbt.plugins.JUnitXmlReportPlugin, _root_.sbt.plugins.Giter8TemplatePlugin, _root_.pl.project13.scala.sbt.JmhPlugin, _root_.scala.xml.{TopScope=&gt;SUB:DOLLARscope}" />
   </component>
 </module>

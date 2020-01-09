@@ -5,8 +5,13 @@ name := "enumerator"
 version := "0.1"
 
 scalaVersion := "2.12.10"
-// TODO CDO: Cross versions
-crossScalaVersions := Seq("2.12", "2.13")
+crossScalaVersions := Seq("2.12")
+
+val JmhVersion = "1.22"
+
+libraryDependencies += "org.openjdk.jmh" % "jmh-core" % "1.22"
+
+enablePlugins(JmhPlugin)
 
 
 /** Tests: */
