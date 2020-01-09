@@ -1,14 +1,31 @@
+/*
+ * Scala (https://www.scala-lang.org)
+ *
+ * Copyright EPFL and Lightbend, Inc.
+ *
+ * Licensed under Apache License 2.0
+ * (http://www.apache.org/licenses/LICENSE-2.0).
+ *
+ * See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+ *
+ * Modifications copyright (C) 2020 digitec GmbH
+ */
+
 package de.digitec.enumerator
 
 import java.lang.reflect.{Field => JField, Method => JMethod}
 
+import scala.annotation.tailrec
 import scala.collection.{AbstractSet, SortedSetLike, generic, immutable, mutable}
 import scala.reflect.NameTransformer._
 import scala.util.matching.Regex
 
 // TODO CDO: Licence and Notice
 
-abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
+@SerialVersionUID(8476000850333817230L)
+abstract class Enumerator(initial: Int) extends Serializable {
+   thisenum =>
 
    def this() = this(0)
 
@@ -28,7 +45,8 @@ abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
 
    /** The cache listing all values of this enumeration. */
    @transient private var vset: ValueSet = null
-   @transient @volatile private var vsetDefined = false
+   @transient
+   @volatile private var vsetDefined = false
 
    /** The mapping from the integer used to identify values to their
     * names. */
@@ -59,10 +77,10 @@ abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
 
    /** The lowest integer amongst those used to identify values in this
     * enumeration, but no higher than 0. */
-   private var bottomId = if(initial < 0) initial else 0
+   private var bottomId = if (initial < 0) initial else 0
 
    /** The one higher than the highest integer amongst those used to identify
-    *  values in this enumeration. */
+    * values in this enumeration. */
    final def maxId: Int = topId
 
    /** The value of this enumeration with given id `x`
@@ -70,12 +88,12 @@ abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
    final def apply(x: Int): Value = vmap(x)
 
    /** Return a `Value` from this `Enumeration` whose name matches
-    *  the argument `s`.  The names are determined automatically via reflection.
+    * the argument `s`.  The names are determined automatically via reflection.
     *
     * @param  s an `Enumeration` name
-    * @return   the `Value` of this `Enumeration` if its name matches `s`
+    * @return the `Value` of this `Enumeration` if its name matches `s`
     * @throws   NoSuchElementException if no `Value` with a matching
-    *           name is in this `Enumeration`
+    *                                  name is in this `Enumeration`
     */
    final def withName(s: String): Value = values.find(_.toString == s).getOrElse(
       throw new NoSuchElementException(s"No value found for '$s'"))
@@ -84,39 +102,48 @@ abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
    protected final def Value: Value = Value(nextId)
 
    /** Creates a fresh value, part of this enumeration, identified by the
-    *  integer `i`.
+    * integer `i`.
     *
-    *  @param i An integer that identifies this value at run-time. It must be
-    *           unique amongst all values of the enumeration.
-    *  @return  Fresh value identified by `i`.
+    * @param i An integer that identifies this value at run-time. It must be
+    *          unique amongst all values of the enumeration.
+    * @return Fresh value identified by `i`.
     */
    protected final def Value(i: Int): Value = Value(i, nextNameOrNull)
 
    /** Creates a fresh value, part of this enumeration, called `name`.
     *
-    *  @param name A human-readable name for that value.
-    *  @return  Fresh value called `name`.
+    * @param name A human-readable name for that value.
+    * @return Fresh value called `name`.
     */
    protected final def Value(name: String): Value = Value(nextId, name)
 
    /** Creates a fresh value, part of this enumeration, called `name`
-    *  and identified by the integer `i`.
+    * and identified by the integer `i`.
     *
     * @param i    An integer that identifies this value at run-time. It must be
     *             unique amongst all values of the enumeration.
     * @param name A human-readable name for that value.
-    * @return     Fresh value with the provided identifier `i` and name `name`.
+    * @return Fresh value with the provided identifier `i` and name `name`.
     */
    protected final def Value(i: Int, name: String): Value = new Val(i, name)
 
-   private def populateNameMap() {
-      val fields: Array[JField] = getClass.getDeclaredFields
+   private def populateNameMap(): Unit = {
+      @tailrec
+      def getFields(clazz: Class[_], acc: Array[JField]): Array[JField] = {
+         if (clazz == null)
+            acc
+         else
+            getFields(clazz.getSuperclass, if (clazz.getDeclaredFields.isEmpty) acc else acc ++ clazz.getDeclaredFields)
+      }
+
+      val fields = getFields(getClass.getSuperclass, getClass.getDeclaredFields)
+
       def isValDef(m: JMethod): Boolean = fields exists (fd => fd.getName == m.getName && fd.getType == m.getReturnType)
 
       // The list of possible Value methods: 0-args which return a conforming type
       val methods: Array[JMethod] = getClass.getMethods filter (m => m.getParameterTypes.isEmpty &&
          classOf[Value].isAssignableFrom(m.getReturnType) &&
-         m.getDeclaringClass != classOf[Enumerator] &&
+         m.getDeclaringClass != classOf[Enumeration] &&
          isValDef(m))
       methods foreach { m =>
          val name = m.getName
@@ -133,7 +160,11 @@ abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
    /* Obtains the name for the value with id `i`. If no name is cached
     * in `nmap`, it populates `nmap` using reflection.
     */
-   private def nameOf(i: Int): String = synchronized { nmap.getOrElse(i, { populateNameMap() ; nmap(i) }) }
+   private def nameOf(i: Int): String = synchronized {
+      nmap.getOrElse(i, {
+         populateNameMap(); nmap(i)
+      })
+   }
 
    /** The type of the enumerated values. */
    @SerialVersionUID(7091335633555234129L)
@@ -148,24 +179,24 @@ abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
          else if (this.id == that.id) 0
          else 1
       override def equals(other: Any): Boolean = other match {
-         case that: Enumerator#Value  => (outerEnum eq that.outerEnum) && (id == that.id)
-         case _                        => false
+         case that: Enumerator#Value => (outerEnum eq that.outerEnum) && (id == that.id)
+         case _ => false
       }
       override def hashCode: Int = id.##
 
       /** Create a ValueSet which contains this value and another one */
-      def + (v: Value): ValueSet = ValueSet(this, v)
+      def +(v: Value): ValueSet = ValueSet(this, v)
    }
 
    /** A class implementing the [[scala.Enumeration.Value]] type. This class
-    *  can be overridden to change the enumeration's naming and integer
-    *  identification behaviour.
+    * can be overridden to change the enumeration's naming and integer
+    * identification behaviour.
     */
    @SerialVersionUID(0 - 3501153230598116017L)
    protected class Val(i: Int, name: String) extends Value with Serializable {
-      def this(i: Int)       = this(i, nextNameOrNull)
+      def this(i: Int) = this(i, nextNameOrNull)
       def this(name: String) = this(nextId, name)
-      def this()             = this(nextId)
+      def this() = this(nextId)
 
       assert(!vmap.isDefinedAt(i), "Duplicate id: " + i)
       vmap(i) = this
@@ -179,7 +210,9 @@ abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
       override def toString(): String = {
          if (name != null) name
          else try thisenum.nameOf(i)
-         catch { case _: NoSuchElementException => "<Invalid enum: no field for #" + i + ">" }
+         catch {
+            case _: NoSuchElementException => "<Invalid enum: no field for #" + i + ">"
+         }
       }
 
       protected def readResolve(): AnyRef = {
@@ -195,47 +228,50 @@ abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
    }
 
    /** A class for sets of values.
-    *  Iterating through this set will yield values in increasing order of their ids.
+    * Iterating through this set will yield values in increasing order of their ids.
     *
-    *  @param nnIds The set of ids of values (adjusted so that the lowest value does
-    *    not fall below zero), organized as a `BitSet`.
-    *  @define Coll `collection.immutable.SortedSet`
+    * @param nnIds The set of ids of values (adjusted so that the lowest value does
+    *              not fall below zero), organized as a `BitSet`.
+    * @define Coll `collection.immutable.SortedSet`
     */
-   class ValueSet private[ValueSet] (private var nnIds: immutable.BitSet)
+   class ValueSet private[ValueSet](private var nnIds: immutable.BitSet)
       extends AbstractSet[Value]
          with immutable.SortedSet[Value]
          with SortedSetLike[Value, ValueSet]
          with Serializable {
 
       implicit def ordering: Ordering[Value] = ValueOrdering
+
       def rangeImpl(from: Option[Value], until: Option[Value]): ValueSet =
          new ValueSet(nnIds.rangeImpl(from.map(_.id - bottomId), until.map(_.id - bottomId)))
 
       override def empty: ValueSet = ValueSet.empty
 
-      def contains(v: Value): Boolean = nnIds contains (v.id - bottomId)
-      def + (value: Value) = new ValueSet(nnIds + (value.id - bottomId))
-      def - (value: Value) = new ValueSet(nnIds - (value.id - bottomId))
+      override def isEmpty: Boolean = nnIds.isEmpty
 
-      // TODO CDO: ???
-      //def ++(that: ValueSet): ValueSet = new ValueSet(this.nnIds | that.nnIds)
-      //def --(that: ValueSet): ValueSet = new ValueSet(this.nnIds &~ that.nnIds)
-      //def intersect(that: ValueSet): ValueSet = new ValueSet(this.nnIds & that.nnIds)
-      //def intersects(that: ValueSet): Boolean = this.intersect(that).nonEmpty
+      override def contains(v: Value): Boolean = nnIds contains (v.id - bottomId)
+      override def +(value: Value) = new ValueSet(nnIds + (value.id - bottomId))
+      override def -(value: Value) = new ValueSet(nnIds - (value.id - bottomId))
+
+      def ++(that: ValueSet): ValueSet = new ValueSet(this.nnIds | that.nnIds)
+      def --(that: ValueSet): ValueSet = new ValueSet(this.nnIds &~ that.nnIds)
+      def intersect(that: ValueSet): ValueSet = new ValueSet(this.nnIds & that.nnIds)
+      def intersects(that: ValueSet): Boolean = this.intersect(that).nonEmpty
 
       def iterator: Iterator[Value] = nnIds.iterator map (id => thisenum.apply(bottomId + id))
 
       override def keysIteratorFrom(start: Value): Iterator[Value] =
-         nnIds keysIteratorFrom start.id  map (id => thisenum.apply(bottomId + id))
+         nnIds keysIteratorFrom start.id map (id => thisenum.apply(bottomId + id))
 
       override def stringPrefix: String = thisenum + ".ValueSet"
       /** Creates a bit mask for the zero-adjusted ids in this set as a
-       *  new array of longs */
+       * new array of longs */
       def toBitMask: Array[Long] = nnIds.toBitMask
    }
 
    /** A factory object for value sets */
    object ValueSet {
+
       import generic.CanBuildFrom
 
       /** The empty value set */
@@ -243,12 +279,14 @@ abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
       /** A value set consisting of given elements */
       def apply(elems: Value*): ValueSet = (newBuilder ++= elems).result()
       /** A value set containing all the values for the zero-adjusted ids
-       *  corresponding to the bits in an array */
+       * corresponding to the bits in an array */
       def fromBitMask(elems: Array[Long]): ValueSet = new ValueSet(immutable.BitSet.fromBitMask(elems))
       /** A builder object for value sets */
       def newBuilder: mutable.Builder[Value, ValueSet] = new mutable.Builder[Value, ValueSet] {
          private[this] val b = new mutable.BitSet
-         def += (x: Value): this.type = { b += (x.id - bottomId); this }
+         def +=(x: Value): this.type = {
+            b += (x.id - bottomId); this
+         }
          def clear(): Unit = b.clear()
          def result(): ValueSet = new ValueSet(b.toImmutable)
       }
@@ -259,4 +297,5 @@ abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
             def apply(): mutable.Builder[Value, ValueSet] = newBuilder
          }
    }
+
 }
