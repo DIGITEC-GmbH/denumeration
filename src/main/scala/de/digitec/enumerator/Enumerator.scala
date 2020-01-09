@@ -41,7 +41,7 @@ abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
    private val vmap: mutable.Map[Int, Value] = new mutable.HashMap
 
    /** The cache listing all values of this enumeration. */
-   @transient private var vset: ValueSet = null
+   @transient private var vset: ValueSet = _
    @transient
    @volatile private var vsetDefined = false
 
