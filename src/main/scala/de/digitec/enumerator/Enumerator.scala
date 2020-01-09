@@ -82,14 +82,14 @@ abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
 
    /** The one higher than the highest integer amongst those used to identify
     * values in this enumeration. */
-   final def maxId: Int = topId
+   final def maxId: Id = topId
 
    /** The value of this enumeration with given id `x`
     */
-   final def apply(x: Int): Value = vmap(x)
+   final def apply(x: Id): Value = vmap(x)
 
    /** Optionally returns the [[Value]] associated with x */
-   final def get(x: Int): Option[Value] = vmap.get(x)
+   final def get(x: Id): Option[Value] = vmap.get(x)
 
    /** Return a `Value` from this `Enumeration` whose name matches
     * the argument `s`.  The names are determined automatically via reflection.
@@ -124,7 +124,7 @@ abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
     *          unique amongst all values of the enumeration.
     * @return Fresh value identified by `i`.
     */
-   protected final def Value(i: Int): Value = Value(i, nextNameOrNull)
+   protected final def Value(i: Id): Value = Value(i, nextNameOrNull)
 
    /** Creates a fresh value, part of this enumeration, called `name`.
     *
@@ -141,7 +141,7 @@ abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
     * @param name A human-readable name for that value.
     * @return Fresh value with the provided identifier `i` and name `name`.
     */
-   protected final def Value(i: Int, name: String): Value = new Val(i, name)
+   protected final def Value(i: Id, name: String): Value = new Val(i, name)
 
    private def populateNameMap(): Unit = {
       @tailrec
@@ -219,8 +219,8 @@ abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
     * identification behaviour.
     */
    @SerialVersionUID(0 - 3501153230598116017L)
-   protected class Val(i: Int, name: String) extends Value with Serializable {
-      def this(i: Int) = this(i, nextNameOrNull)
+   protected class Val(i: Id, name: String) extends Value with Serializable {
+      def this(i: Id) = this(i, nextNameOrNull)
       def this(name: String) = this(nextId, name)
       def this() = this(nextId)
 
