@@ -24,8 +24,6 @@ import scala.util.matching.Regex
 @SerialVersionUID(8476000850333817230L)
 abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
 
-   type Id = Int
-
    def this() = this(0)
 
    /* Note that `readResolve` cannot be private, since otherwise
@@ -64,7 +62,7 @@ abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
    }
 
    /** The integer to use to identify the next created value. */
-   protected var nextId: Id = initial
+   protected var nextId: Int = initial
 
    /** The string to use to name the next created value. */
    protected var nextName: Iterator[String] = _
@@ -74,22 +72,22 @@ abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
 
    /** The highest integer amongst those used to identify values in this
     * enumeration. */
-   private var topId: Id = initial
+   private var topId: Int = initial
 
    /** The lowest integer amongst those used to identify values in this
     * enumeration, but no higher than 0. */
-   private var bottomId: Id = if (initial < 0) initial else 0
+   private var bottomId: Int = if (initial < 0) initial else 0
 
    /** The one higher than the highest integer amongst those used to identify
     * values in this enumeration. */
-   final def maxId: Id = topId
+   final def maxId: Int = topId
 
    /** The value of this enumeration with given id `x`
     */
-   final def apply(x: Id): Value = vmap(x)
+   final def apply(x: Int): Value = vmap(x)
 
    /** Optionally returns the [[Value]] associated with x */
-   final def get(x: Id): Option[Value] = vmap.get(x)
+   final def get(x: Int): Option[Value] = vmap.get(x)
 
    /** Return a `Value` from this `Enumeration` whose name matches
     * the argument `s`.  The names are determined automatically via reflection.
@@ -124,7 +122,7 @@ abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
     *          unique amongst all values of the enumeration.
     * @return Fresh value identified by `i`.
     */
-   protected final def Value(i: Id): Value = Value(i, nextNameOrNull)
+   protected final def Value(i: Int): Value = Value(i, nextNameOrNull)
 
    /** Creates a fresh value, part of this enumeration, called `name`.
     *
@@ -141,7 +139,7 @@ abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
     * @param name A human-readable name for that value.
     * @return Fresh value with the provided identifier `i` and name `name`.
     */
-   protected final def Value(i: Id, name: String): Value = new Val(i, name)
+   protected final def Value(i: Int, name: String): Value = new Val(i, name)
 
    private def populateNameMap(): Unit = {
       @tailrec
@@ -196,7 +194,7 @@ abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
    @SerialVersionUID(7091335633555234129L)
    abstract class Value extends Ordered[Value] with Serializable {
       /** the id and bit location of this enumeration value */
-      def id: Id
+      def id: Int
       /** a marker so we can tell whose values belong to whom come reflective-naming time */
       private[Enumerator] val outerEnum = thisenum
 
@@ -219,8 +217,8 @@ abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
     * identification behaviour.
     */
    @SerialVersionUID(0 - 3501153230598116017L)
-   protected class Val(i: Id, name: String) extends Value with Serializable {
-      def this(i: Id) = this(i, nextNameOrNull)
+   protected class Val(i: Int, name: String) extends Value with Serializable {
+      def this(i: Int) = this(i, nextNameOrNull)
       def this(name: String) = this(nextId, name)
       def this() = this(nextId)
 
@@ -231,7 +229,7 @@ abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
       if (nextId > topId) topId = nextId
       if (i < bottomId) bottomId = i
 
-      def id: Id = i
+      def id: Int = i
 
       override def toString(): String = {
          if (name != null) name
