@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/enumerator.iml" filepath="$PROJECT_DIR$/.idea/modules/enumerator.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/enumerator-build.iml" filepath="$PROJECT_DIR$/.idea/modules/enumerator-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/denumeration.iml" filepath="$PROJECT_DIR$/.idea/modules/denumeration.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/denumeration-build.iml" filepath="$PROJECT_DIR$/.idea/modules/denumeration-build.iml" />
     </modules>
   </component>
 </project>

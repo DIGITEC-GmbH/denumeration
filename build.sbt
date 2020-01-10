@@ -1,8 +1,8 @@
 organization := "de.digitec"
 
-name := "enumerator"
+name := "denumeration"
 
-version := "0.4.3"
+version := "0.5.1"
 
 scalaVersion := "2.12.10"
 crossScalaVersions := Seq("2.12")

@@ -12,7 +12,7 @@
  * Modifications copyright (C) 2020 digitec GmbH
  */
 
-package de.digitec.enumerator
+package de.digitec.denumeration
 
 import java.lang.reflect.{Field => JField, Method => JMethod}
 
@@ -22,7 +22,7 @@ import scala.reflect.NameTransformer._
 import scala.util.matching.Regex
 
 @SerialVersionUID(8476000850333817230L)
-abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
+abstract class DEnumeration(initial: Int) extends Serializable { thisenum =>
 
    def this() = this(0)
 
@@ -196,14 +196,14 @@ abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
       /** the id and bit location of this enumeration value */
       def id: Int
       /** a marker so we can tell whose values belong to whom come reflective-naming time */
-      private[Enumerator] val outerEnum = thisenum
+      private[DEnumeration] val outerEnum = thisenum
 
       override def compare(that: Value): Int =
          if (this.id < that.id) -1
          else if (this.id == that.id) 0
          else 1
       override def equals(other: Any): Boolean = other match {
-         case that: Enumerator#Value => (outerEnum eq that.outerEnum) && (id == that.id)
+         case that: DEnumeration#Value => (outerEnum eq that.outerEnum) && (id == that.id)
          case _ => false
       }
       override def hashCode: Int = id.##
@@ -240,7 +240,7 @@ abstract class Enumerator(initial: Int) extends Serializable { thisenum =>
       }
 
       protected def readResolve(): AnyRef = {
-         val enum = thisenum.readResolve().asInstanceOf[Enumerator]
+         val enum = thisenum.readResolve().asInstanceOf[DEnumeration]
          if (enum.vmap == null) this
          else enum.vmap(i)
       }
