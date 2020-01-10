@@ -1,4 +1,10 @@
-# Enumerator
+# DEnumeration
+
+An optimized version of scala's [Enumeration](https://github.com/scala/scala/blob/2.12.x/src/library/scala/Enumeration.scala).
+
+ *Optimizations* 
+ + nameOf takes almost constant time
+ + Operations on ValueSet take constant time
 
 
 ## License 
