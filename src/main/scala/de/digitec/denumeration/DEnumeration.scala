@@ -98,6 +98,7 @@ abstract class DEnumeration(initial: Int) extends Serializable { thisenum =>
     *                                  name is in this `Enumeration`
     */
    final def withName(s: String): Value = {
+
       valuesByName.getOrElse(s, {
          updateValuesByNameMap()
          valuesByName(s)
@@ -172,11 +173,8 @@ abstract class DEnumeration(initial: Int) extends Serializable { thisenum =>
    }
 
    private def updateValuesByNameMap(): Unit = {
-      if (nmap.isEmpty) {
-         populateNameMap()
-      }
-      nmap.foreach { idString =>
-         valuesByName += ((idString._2, vmap(idString._1)))
+      vmap.values.foreach { value =>
+         valuesByName += ((value.toString, value))
       }
    }
 

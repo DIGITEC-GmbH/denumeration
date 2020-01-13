@@ -8,8 +8,12 @@ scalaVersion := "2.12.10"
 crossScalaVersions := Seq("2.12")
 
 val JmhVersion = "1.22"
+val ScalaCheckVersion = "1.14.3"
+val JUnitVersion = "4.13"
 
 libraryDependencies += "org.openjdk.jmh" % "jmh-core" % "1.22"
+libraryDependencies += "org.scalacheck" %% "scalacheck" % ScalaCheckVersion % Test
+libraryDependencies += "junit" % "junit" % JUnitVersion % Test
 
 enablePlugins(JmhPlugin)
 
