@@ -2,7 +2,7 @@ organization := "de.digitec"
 
 name := "denumeration"
 
-version := "0.5.2-SNAPSHOT"
+version := "0.5.5-SNAPSHOT"
 
 scalaVersion := "2.12.10"
 crossScalaVersions := Seq("2.12")

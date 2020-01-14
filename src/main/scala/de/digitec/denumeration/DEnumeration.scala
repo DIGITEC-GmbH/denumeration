@@ -49,7 +49,7 @@ abstract class DEnumeration(initial: Int) extends Serializable { thisenum =>
     * names. */
    private val nmap: mutable.Map[Int, String] = new mutable.HashMap
 
-   private val valuesByName: mutable.Map[String, Value] = new mutable.HashMap
+   @transient private val valuesByName: mutable.Map[String, Value] = new mutable.HashMap
 
    /** The values of this enumeration as a set.
     */
@@ -97,7 +97,7 @@ abstract class DEnumeration(initial: Int) extends Serializable { thisenum =>
     * @throws   NoSuchElementException if no `Value` with a matching
     *                                  name is in this `Enumeration`
     */
-   final def withName(s: String): Value = {
+   final def withName(s: String): Value = synchronized {
 
       valuesByName.getOrElse(s, {
          updateValuesByNameMap()
@@ -106,7 +106,7 @@ abstract class DEnumeration(initial: Int) extends Serializable { thisenum =>
    }
 
    /** Like [[withName()]] without throwing an Exception */
-   final def withNameOpt(s: String): Option[Value] = {
+   final def withNameOpt(s: String): Option[Value] = synchronized {
       valuesByName.get(s) orElse {
          updateValuesByNameMap()
          valuesByName.get(s)
